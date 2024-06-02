@@ -1,5 +1,7 @@
 from collections import Counter
 import string
+import sys
+import argparse
 
 def most_used_words(filename, num_words=10, stopwords_file="stopwords.txt"):
   """
@@ -34,12 +36,32 @@ def most_used_words(filename, num_words=10, stopwords_file="stopwords.txt"):
   # Return the most common words
   return word_counts.most_common(num_words)
 
-# Example usage
-filename = "your_text_file.txt"  # Replace with your actual filename
-stopwords_file = "stopwords.txt"  # You can modify this path
+# Set up argument parser
+parser = argparse.ArgumentParser(description='Analyze word usage in a text file.')
+parser.add_argument('filename', help='Path to the text file to analyze.')
+parser.add_argument('--stopwords', default="stopwords.txt", help='Path to the stopwords file (default: stopwords.txt).')
+parser.add_argument('--num_words', default=10, type=int, help='Number of most used words to return (default: 10).')
 
-most_common = most_used_words(filename, num_words=25, stopwords_file=stopwords_file)  # Adjust num_words as desired
+# Parse arguments
+args = parser.parse_args()
+filename = args.filename
+stopwords_file = args.stopwords
+num_words = args.num_words
 
+# Read the text file with error handling
+try:
+  with open(filename, 'r') as f:
+    text = f.read()
+  print(f"Successfully read {filename}")
+except FileNotFoundError:
+  print(f"Error: The file {filename} was not found.")
+  sys.exit(1)
+except Exception as e:
+  print(f"An unexpected error occurred while reading the file: {e}")
+  sys.exit(1)
+
+# Analyze and print results
+most_common = most_used_words(filename, num_words, stopwords_file)
 print("Most Used Words (excluding stopwords and numbers):")
 for word, count in most_common:
   print(f"{word}: {count}")
