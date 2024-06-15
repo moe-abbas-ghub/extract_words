@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from collections import Counter
 import string
 import sys
